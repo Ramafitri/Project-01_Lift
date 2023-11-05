@@ -110,7 +110,7 @@ def jalurLift(data_gerak):
     """
         KAMUS LOKAL
             pos : int                   # position -> menunjukkan posisi lantai untuk perhitungan algoritma jalur
-            gerak : array of int        # array dari lantai yang akan dituju
+            gerak : array of int        # array dari lantai yang akan dituju == array jalur
     """
 
     global y_0
@@ -176,6 +176,7 @@ def add():
         KAMUS LOKAL 
             a,b,c : int
             data : array [a,b,c] of int
+            data_gerak : array of array of int
     """
 
     global berat, list_data, total_weight, jalur, maximum_weight                        # mengambil variabel global
@@ -201,7 +202,7 @@ def add():
                 data_gerak = [[subdata[0], subdata[1]] for subdata in list_data]
                 jalur, data_gerak = jalurLift(data_gerak)
 
-                # print("\nJalur lift", jalur)                                        # menunjukkan list jalur yang akan ditempuh lift
+                print("\nJalur lift", jalur)                                        # menunjukkan list jalur yang akan ditempuh lift
             else:
                 showinfo(title="ALERT !", message="Lift sudah mencapai batas berat")    # alert jika tidak memenuhi kriteria
         else:
@@ -217,7 +218,7 @@ def move():
     global jalur, k, i, y_0, y, p, b, total_weight, a, list_data
 
     SPEED.set("0.00")
-    ELPAPSEDTIME.set("00:00.000")
+    ELAPSEDTIME.set("00:00.000")
     disable_button()
 
     """
@@ -243,7 +244,7 @@ def move():
 
         # Gerakan menujul lantai tujuan (gerak merepresentasikan lantai tujuan)
         gerak = jalur.pop(0)
-        y = (8 - gerak)*75                  # y : koordinat lantai tujuan
+        y = (8 - gerak)*75                                          # y : koordinat lantai tujuan
 
         ## RUMUS  
         v_max = ((2 * abs(a) * 1/3 * abs(y - y_0))**0.5)            # v_max = kecepatan maksimum yang akan ditempuh lift = velocity ketika t1 atau 1/3 y
@@ -251,11 +252,13 @@ def move():
 
         t1 = ((2 * abs(y - y_0) / (3*abs(a)))**0.5 )                # t1 = time saat menempuh jarak 1/3 y
         t2 = (abs(y-y_0)) / (3*v_max)                               # t2 = time saat menempuh jarak 2/3 y
-        t3 = t1                                           # t3 = time saat menempuh jarak 3/3 y
+        t3 = t1                                                     # t3 = time saat menempuh jarak 3/3 y
 
         ## RUN PROGRAM : GERAK LIFT 
         run_program(gerak, a, y, v_max, t1, t2, t3, t)
+
     else:
+        # mengembalikan button tambahkan dan jalankan
         enable_button()
         list_data = []
 
@@ -301,7 +304,7 @@ def run_program(gerak, a, y, v_max, t1, t2, t3, t):
     speed_update = format_speed(vt)
     floor_update = format_floor(rect_y)
 
-    ELPAPSEDTIME.set(time_update)
+    ELAPSEDTIME.set(time_update)
     SPEED.set(speed_update)
     FLOOR.set(floor_update)
 
@@ -350,9 +353,9 @@ window.resizable(False,False)
 LANTAI_AWAL = tk.StringVar()
 LANTAI_TUJUAN = tk.StringVar()
 BERAT = tk.StringVar()
-ELPAPSEDTIME = tk.StringVar()
-SPEED = tk.StringVar()
-FLOOR = tk.StringVar()
+ELAPSEDTIME = tk.StringVar(value= "00:00:00.000")
+SPEED = tk.StringVar(value="0.00")
+FLOOR = tk.StringVar(value=4)
 
 ### USER SECTION
 input_frame = ttk.Frame(master= window)
@@ -423,8 +426,7 @@ time_frame.pack(pady=5, fill='x')
 time_label = ttk.Label(master=time_frame, text="Elapsed Time : ", font="Courier 12")
 time_label.pack(side='left')
 
-ELPAPSEDTIME.set("00:00:00.000")
-timeIndicator_label = ttk.Label(master=time_frame, textvariable=ELPAPSEDTIME, font="Courier 12")
+timeIndicator_label = ttk.Label(master=time_frame, textvariable=ELAPSEDTIME, font="Courier 12")
 timeIndicator_label.pack(side='left')
 
 #   speed
@@ -435,7 +437,6 @@ speed_frame.pack(padx=5, fill='x')
 speed_label = ttk.Label(master=speed_frame, text="Speed (m/s)  : ", font="Courier 12")
 speed_label.pack(side='left')
 
-SPEED.set("0.00")
 speedIndicator_label = ttk.Label(master=speed_frame, textvariable=SPEED, font="Courier 12")
 speedIndicator_label.pack(side='left')
 
@@ -447,7 +448,6 @@ floor_frame.pack(padx=5, pady=5, fill='x')
 floor_label = ttk.Label(master=floor_frame, text="floor\t     : ", font="Courier 12")
 floor_label.pack(side='left')
 
-FLOOR.set(4)
 floorIndicator_label = ttk.Label(master=floor_frame, textvariable=FLOOR, font="Courier 12")
 floorIndicator_label.pack(side='left')
 
@@ -456,7 +456,7 @@ kelompok = ttk.Label(master=input_frame, text='KELOMPOK 1', font='Roboto 15 bold
 kelompok.place(y=410 )
 anggota = ttk.Label(
     master=input_frame, 
-    text='''1. Faiz Yasyukur Ilham / 16923091
+    text='''1. Faiz Yasykur Ilham / 16923091
 2. Kristofer Adrian / 16923143
 3. Muhammad Ahda Sabila / 16923219
 4. Nurman Tangguh / 16923267
@@ -546,10 +546,3 @@ header_label.pack()
 
 ### WINDOW MAIN LOOP
 window.mainloop()
-
-
-
-
-
-
-
